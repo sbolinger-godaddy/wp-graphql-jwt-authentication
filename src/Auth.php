@@ -73,6 +73,12 @@ class Auth {
 		 * Set the current user as the authenticated user
 		 */
 		wp_set_current_user( $user->data->ID );
+		
+		/** 
+		 * Set auth cookie. This fixes an issue where cart is cleared when JWT token is refreshed. It also keeps the user logged in to WP after a JWT login.
+		 */
+		$secure_cookie = apply_filters( 'secure_signon_cookie', $secure_cookie, $credentials );
+		wp_set_auth_cookie( $user->data->ID, true, $secure_cookie );
 
 		/**
 		 * The token is signed, now create the object with basic user data to send to the client
